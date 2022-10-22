@@ -1,4 +1,4 @@
-![love3d_logo](assets/logo.svg)
+<img src="assets/logo.svg" width="30px">
 
 
 Löve3D engine (forked from g3d) simplifies [LÖVE](http://love2d.org)'s 2D capabilities for 3D games to be as simple to use as possible. We recommend to use Blender (open source software ) to build the 3D models for using inside Löve3D games, and it has full interoperability with Löve2D source code.
