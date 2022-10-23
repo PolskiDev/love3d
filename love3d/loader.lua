@@ -21,6 +21,8 @@ function love.update(dt)
     
 
     love3d.camera.firstPersonMovement(dt*speed)
+    love3d.controller.update(dt)
+    love3d.controller.setDefaultControllers(speed,dt)
 end
 function love.mousemoved( x, y, dx, dy, istouch )
     love3d.mousemoved( x, y, dx, dy, istouch )
@@ -29,6 +31,7 @@ end
 
 function love.draw()
     love3d.draw()
+    love3d.controller.draw()
 end
 
 

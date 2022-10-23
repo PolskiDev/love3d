@@ -18,6 +18,9 @@
 
  local paddy = {}
  paddy.debug = true
+
+ paddy.OS1 = 'Android'
+ paddy.OS2 = 'iOS'
  
  -- The size of the buttons which can be pressed.
  paddy.buttonw = 50
@@ -77,113 +80,127 @@
  
  
  function paddy.draw()
-     -- Draw the control pad
-     for _,widget in ipairs(paddy.widgets) do
-         love.graphics.setColor(0.607,0.607,0.607,0.196)
-         love.graphics.circle("fill", widget.x+widget.w/2,widget.y+widget.h/2,widget.w/2)
- 
-         love.graphics.setCanvas(widget.canvas)
-         love.graphics.clear()
-     
-         love.graphics.setColor(0.607,0.607,0.607,1)
-     
- 
-         for _,button in ipairs(widget.buttons) do
-             if button.isDown then
-                 love.graphics.setColor(0.607,0.607,0.607,1)
-                 love.graphics.rectangle("fill", 
-                     button.x+widget.padding, 
-                     button.y+widget.padding, 
-                     paddy.buttonw-widget.padding*2, 
-                     paddy.buttonh-widget.padding*2,
-                     10
-                 )
-             else
-                 love.graphics.setColor(0.607,0.607,0.607,0.784)	
-                 love.graphics.rectangle("line", 
-                     button.x+widget.padding, 
-                     button.y+widget.padding, 
-                     paddy.buttonw-widget.padding*2, 
-                     paddy.buttonh-widget.padding*2,
-                     10
-                 )
-             end
-             
-             
-             -- Temporary code until  button naming can be improved
-             if paddy.debug then
-                 love.graphics.setColor(1,1,1,1)
-                 
-                 local font = love.graphics.newFont(20)
-                 love.graphics.setFont(font)
-                 local str = button.name
-                 
- 
-                 
-                 love.graphics.printf(
-                     button.name, 
-                     button.x+paddy.buttonw/2,
-                     button.y+paddy.buttonh/2, 
-                     font:getWidth(str),
-                     "center"
-                 )
-             end
-         end
-     
-         love.graphics.setCanvas()
-         love.graphics.setColor(1,1,1,widget.opacity)
-         love.graphics.draw(widget.canvas, widget.x, widget.y)
-     end
-     
-     
-     -- debug related
-     if paddy.debug then
-         for _,id in ipairs(paddy.touched) do
-             local x,y = love.touch.getPosition(id)
-             love.graphics.circle("fill",x,y,20)
-         end
-     end
- 
+    if love.system.getOS() == paddy.OS1
+    or love.system.getOS() == paddy.OS2
+    then
+        -- Draw the control pad
+        for _,widget in ipairs(paddy.widgets) do
+            love.graphics.setColor(0.607,0.607,0.607,0.196)
+            love.graphics.circle("fill", widget.x+widget.w/2,widget.y+widget.h/2,widget.w/2)
+    
+            love.graphics.setCanvas(widget.canvas)
+            love.graphics.clear()
+        
+            love.graphics.setColor(0.607,0.607,0.607,1)
+        
+    
+            for _,button in ipairs(widget.buttons) do
+                if button.isDown then
+                    love.graphics.setColor(0.607,0.607,0.607,1)
+                    love.graphics.rectangle("fill", 
+                        button.x+widget.padding, 
+                        button.y+widget.padding, 
+                        paddy.buttonw-widget.padding*2, 
+                        paddy.buttonh-widget.padding*2,
+                        10
+                    )
+                else
+                    love.graphics.setColor(0.607,0.607,0.607,0.784)	
+                    love.graphics.rectangle("line", 
+                        button.x+widget.padding, 
+                        button.y+widget.padding, 
+                        paddy.buttonw-widget.padding*2, 
+                        paddy.buttonh-widget.padding*2,
+                        10
+                    )
+                end
+                
+                
+                -- Temporary code until  button naming can be improved
+                if paddy.debug then
+                    love.graphics.setColor(1,1,1,1)
+                    
+                    local font = love.graphics.newFont(20)
+                    love.graphics.setFont(font)
+                    local str = button.name
+                    
+    
+                    
+                    love.graphics.printf(
+                        button.name, 
+                        button.x+paddy.buttonw/2,
+                        button.y+paddy.buttonh/2, 
+                        font:getWidth(str),
+                        "center"
+                    )
+                end
+            end
+        
+            love.graphics.setCanvas()
+            love.graphics.setColor(1,1,1,widget.opacity)
+            love.graphics.draw(widget.canvas, widget.x, widget.y)
+        end
+        
+        
+        -- debug related
+        if paddy.debug then
+            for _,id in ipairs(paddy.touched) do
+                local x,y = love.touch.getPosition(id)
+                love.graphics.circle("fill",x,y,20)
+            end
+        end
+    end
  end
  
  function paddy.isDown(key)
-     -- Check for any buttons which are currently being pressed
-     for _,widget in ipairs(paddy.widgets) do
-         for _,button in ipairs(widget.buttons) do
-             if button.isDown and button.name == key then return true end
-         end
-     end
+    if love.system.getOS() == paddy.OS1
+    or love.system.getOS() == paddy.OS2
+    then
+        -- Check for any buttons which are currently being pressed
+        for _,widget in ipairs(paddy.widgets) do
+            for _,button in ipairs(widget.buttons) do
+                if button.isDown and button.name == key then return true end
+            end
+        end
+    end
  end
  
  function paddy.update(dt)
      -- Decide which buttons are being pressed based on a 
      -- simple collision, then change the state of the button
- 
-     paddy.touched = love.touch.getTouches()
-     
-      for _,widget in ipairs(paddy.widgets) do
-         for _,button in ipairs(widget.buttons) do
-             button.isDown = false
-             for _,id in ipairs(paddy.touched) do	
-                 local tx,ty = love.touch.getPosition(id)
-                 if  tx >= widget.x+button.x 
-                 and tx <= widget.x+button.x+paddy.buttonw 
-                 and ty >= widget.y+button.y 
-                 and ty <= widget.y+button.y+paddy.buttonh then
-                     button.isDown = true
-                 end
-             end
-         end
+     if love.system.getOS() == paddy.OS1
+     or love.system.getOS() == paddy.OS2
+     then
+        paddy.touched = love.touch.getTouches()
+        
+        for _,widget in ipairs(paddy.widgets) do
+            for _,button in ipairs(widget.buttons) do
+                button.isDown = false
+                for _,id in ipairs(paddy.touched) do	
+                    local tx,ty = love.touch.getPosition(id)
+                    if  tx >= widget.x+button.x 
+                    and tx <= widget.x+button.x+paddy.buttonw 
+                    and ty >= widget.y+button.y 
+                    and ty <= widget.y+button.y+paddy.buttonh then
+                        button.isDown = true
+                    end
+                end
+            end
+        end
      end
  end
  
  function paddy.setDefaultControllers(speed,dt)
-    if paddy.isDown("up") then
-        love3d.camera.position[3] = love3d.camera.position[3] + speed*dt       
-	end
-    if paddy.isDown("down") then
-        love3d.camera.position[3] = love3d.camera.position[3] - speed*dt       
-	end
+    if love.system.getOS() == paddy.OS1
+    or love.system.getOS() == paddy.OS2
+    then
+        if paddy.isDown("up") then
+            love3d.camera.position[3] = love3d.camera.position[3] + speed*dt       
+        end
+        if paddy.isDown("down") then
+            love3d.camera.position[3] = love3d.camera.position[3] - speed*dt       
+        end
+    end
 
  end
  

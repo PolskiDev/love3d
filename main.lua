@@ -52,6 +52,8 @@ function love3d.draw()
 
     -- Showing the timer on the screen
     love.graphics.print("Timer: "..timer,10,90)
+
+    
     
     -- Rendering entities
     moon:draw()
